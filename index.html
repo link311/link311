@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Link311.com</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+    header {
+      background-color: #111;
+      color: #fff;
+      padding: 20px;
+      text-align: center;
+    }
+    nav {
+      background: #222;
+      padding: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin: 5px 15px;
+    }
+    .search-box {
+      text-align: center;
+      margin: 20px;
+    }
+    .search-box input {
+      padding: 10px;
+      width: 80%;
+      max-width: 400px;
+    }
+    .category {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin: 20px;
+    }
+    .movie {
+      width: 150px;
+      margin: 10px;
+      background: white;
+      padding: 10px;
+      border-radius: 8px;
+      text-align: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    }
+    .movie img {
+      width: 100%;
+      border-radius: 5px;
+    }
+    .share-buttons {
+      text-align: center;
+      margin: 30px 0;
+    }
+    .share-buttons button {
+      margin: 5px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      background: #333;
+      color: white;
+    }
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #111;
+      color: white;
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Link311.com</h1>
+  <p>বাংলা, হিন্দি, ইংরেজি ও অন্যান্য দেশের মুভি লিংকের সংগ্রহ</p>
+</header>
+
+<nav>
+  <a href="#">হোম</a>
+  <a href="#">বাংলা মুভি</a>
+  <a href="#">হিন্দি মুভি</a>
+  <a href="#">ইংরেজি মুভি</a>
+  <a href="#">১৮+ মুভি</a>
+  <a href="#">১৮+ নাটক</a>
+  <a href="#">কান্ট্রি অনুযায়ী</a>
+  <a href="#">সাল অনুযায়ী</a>
+  <a href="#">ওয়েব সিরিজ</a>
+</nav>
+
+<div class="search-box">
+  <input type="text" placeholder="যেকোনো মুভি বা নাটক খুঁজুন...">
+</div>
+
+<div class="category">
+  <div class="movie">
+    <img src="https://via.placeholder.com/150" alt="Movie Poster">
+    <p>Demo Movie 1</p>
+  </div>
+  <div class="movie">
+    <img src="https://via.placeholder.com/150" alt="Movie Poster">
+    <p>Demo Movie 2</p>
+  </div>
+</div>
+
+<div class="share-buttons">
+  <h3>ওয়েবসাইটটি শেয়ার করুন:</h3>
+  <button onclick="shareTo('facebook')">Facebook</button>
+  <button onclick="shareTo('messenger')">Messenger</button>
+  <button onclick="copyLink()">Copy Link (IMO/Instagram)</button>
+  <button onclick="shareTo('whatsapp')">WhatsApp</button>
+  <button onclick="shareTo('twitter')">Twitter</button>
+  <button onclick="shareTo('telegram')">Telegram</button>
+</div>
+
+<footer>
+  Copyright © Link311.com 2020–2025. All rights reserved.
+</footer>
+
+<script>
+  function shareTo(platform) {
+    const url = encodeURIComponent(window.location.href);
+    let shareUrl = "";
+    switch(platform) {
+      case 'facebook': shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`; break;
+      case 'messenger': shareUrl = `fb-messenger://share?link=${url}`; break;
+      case 'whatsapp': shareUrl = `https://api.whatsapp.com/send?text=${url}`; break;
+      case 'twitter': shareUrl = `https://twitter.com/intent/tweet?url=${url}`; break;
+      case 'telegram': shareUrl = `https://t.me/share/url?url=${url}`; break;
+    }
+    if (shareUrl) window.open(shareUrl, '_blank');
+  }
+
+  function copyLink() {
+    navigator.clipboard.writeText(window.location.href).then(() => {
+      alert("লিংক কপি হয়েছে!");
+    });
+  }
+</script>
+
+</body>
+</html>
+<?php
+$conn = new mysqli("localhost", "root", "", "link311");
+if ($conn->connect_error) {
+    die("Database connection failed: " . $conn->connect_error);
+}
+?>
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Link311 CMS</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>Link311 Movie CMS</h1>
+  <a href="upload.php">[ ফাইল আপলোড করুন ]</a>
+  <h3>ক্যাটাগরি নির্বাচন করুন:</h3>
+  <ul>
+    <li><a href="show.php?cat=tamil">তামিল মুভি</a></li>
+    <li><a href="show.php?cat=bangla_drama">বাংলা নাটক</a></li>
+    <li><a href="show.php?cat=song">গান</a></li>
+  </ul>
+</body>
+</html>
+<?php
+include 'db.php';
+$cat = $_GET['cat'] ?? 'tamil';
+
+$result = $conn->prepare("SELECT * FROM uploads WHERE category = ?");
+$result->bind_param("s", $cat);
+$result->execute();
+$data = $result->get_result();
+
+echo "<h2>" . strtoupper($cat) . " ক্যাটাগরির ফাইলসমূহ:</h2>";
+while ($row = $data->fetch_assoc()) {
+    echo "<p><a href='" . $row['file_url'] . "' target='_blank'>" . htmlspecialchars($row['title']) . "</a></p>";
+}
+?>
+<a href='index.php'>[ হোমে ফিরে যান ]</a>
+<?php include 'db.php'; ?>
+<h2>নতুন ফাইল/ভিডিও লিংক আপলোড করুন</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  শিরোনাম: <input type="text" name="title" required><br>
+  ভিডিও/ফাইল লিংক: <input type="text" name="file_url" required><br>
+  ক্যাটাগরি:
+  <select name="category" required>
+    <option value="tamil">তামিল মুভি</option>
+    <option value="bangla_drama">বাংলা নাটক</option>
+    <option value="song">গান</option>
+  </select><br>
+  <button type="submit">আপলোড করুন</button>
+</form>
+
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $title = $_POST['title'];
+  $url = $_POST['file_url'];
+  $cat = $_POST['category'];
+
+  $stmt = $conn->prepare("INSERT INTO uploads (title, category, file_url) VALUES (?, ?, ?)");
+  $stmt->bind_param("sss", $title, $cat, $url);
+  $stmt->execute();
+
+  echo "<p>আপলোড সফলভাবে সম্পন্ন হয়েছে!</p>";
+}
+?>
+body {
+  font-family: sans-serif;
+  background: #f2f2f2;
+  padding: 20px;
+}
+a { color: blue; text-decoration: none; }
+input, select, button {
+  display: block;
+  margin: 10px 0;
+  padding: 5px;
+}
+<div class="menu-container">
+  <div class="dots" onclick="toggleMenu()">⋮</div>
+  <div class="dropdown" id="dropdownMenu">
+    <p><strong>ওয়েবসাইট নিয়মাবলী:</strong></p>
+    <ul>
+      <li>এই সাইটে কোনো প্রাপ্তবয়স্ক (18+) কনটেন্ট নেই</li>
+      <li>সব মুভি ও গান শুধুমাত্র রেফারেন্স লিংক হিসেবে যুক্ত</li>
+      <li>আপনি চাইলে আপনার মুভি বা গান রিকোয়েস্ট করতে পারেন</li>
+      <li>সাইটটি সম্পূর্ণ বিনামূল্যে ব্যবহারের জন্য</li>
+    </ul>
+  </div>
+</div>
+.menu-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+}
+
+.dots {
+  font-size: 24px;
+  cursor: pointer;
+  padding: 5px 10px;
+  background: #ddd;
+  border-radius: 50%;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  top: 35px;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 10px;
+  width: 250px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+.dropdown ul {
+  padding-left: 20px;
+  margin: 0;
+}
+
+.dropdown ul li {
+  margin-bottom: 8px;
+}
+
+<script>
+function toggleMenu() {
+  var menu = document.getElementById('dropdownMenu');
+  menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+</script>
+<?php include 'db.php'; ?>
+<h2>নতুন ফাইল/গান আপলোড করুন</h2>
+
+<form method="POST" enctype="multipart/form-data">
+  শিরোনাম: <input type="text" name="title" required><br>
+  গান/ভিডিও ফাইল: <input type="file" name="media_file" required><br>
+  ক্যাটাগরি:
+  <select name="category" required>
+    <option value="tamil">তামিল মুভি</option>
+    <option value="bangla_drama">বাংলা নাটক</option>
+    <option value="song">গান</option>
+  </select><br>
+  <button type="submit">আপলোড করুন</button>
+</form>
+
+<?php
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $title = $_POST['title'];
+  $cat = $_POST['category'];
+  $file = $_FILES['media_file'];
+
+  if ($file['error'] == 0) {
+    $upload_dir = "uploads/";
+    $filename = time() . "_" . basename($file["name"]);
+    $target_file = $upload_dir . $filename;
+
+    if (move_uploaded_file($file["tmp_name"], $target_file)) {
+      $url = $target_file;
+
+      $stmt = $conn->prepare("INSERT INTO uploads (title, category, file_url) VALUES (?, ?, ?)");
+      $stmt->bind_param("sss", $title, $cat, $url);
+      $stmt->execute();
+
+      echo "<p>আপলোড সফলভাবে সম্পন্ন হয়েছে!</p>";
+    } else {
+      echo "<p>দুঃখিত, ফাইল আপলোড ব্যর্থ হয়েছে।</p>";
+    }
+  } else {
+    echo "<p>ফাইল আপলোড করতে সমস্যা হয়েছে।</p>";
+  }
+}
+?>
